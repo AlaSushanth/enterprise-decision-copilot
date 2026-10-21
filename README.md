@@ -115,10 +115,3 @@ Open [http://localhost:8501](http://localhost:8501) in your browser.
 
 ---
 
-## 💼 Resume Ready Description
-
-**Enterprise Decision Intelligence Copilot (Hybrid Agentic RAG & Analytics)**
-* Architected a decision-support copilot routing natural language queries across structured databases (DuckDB) and unstructured consulting documents (ChromaDB), delivering cited executive decision briefs in <0.2s.
-* Implemented an autonomous query router classifying multi-dimensional inquiries into Text-to-SQL generation and vector retrieval with 100% intent classification accuracy.
-* Engineered a Responsible AI guardrail verifying numeric claims against underlying SQL tables and validating document source citations to prevent hallucinations.
-* Built a benchmark evaluation suite testing keyword context recall (80.6%) and system faithfulness, packaged into an interactive Streamlit executive dashboard.
