@@ -1,0 +1,29 @@
+# Python cache
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+
+# Virtual Environment
+venv/
+env/
+ENV/
+.venv/
+
+# Environment Variables & Secrets
+.env
+*.env.local
+
+# Databases & Vector DB storage
+chroma_db/
+*.duckdb.wal
+
+# Streamlit local state
+.streamlit/
+
+# OS and IDE files
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
