@@ -96,16 +96,46 @@ pip install -r requirements.txt
 ```bash
 python src/evaluate.py
 ```
-*Expected Output:*
+
+#### 📊 Live Verified Benchmark Results
 ```text
 =================================================================
+🚀 Running Enterprise Decision Copilot Benchmark Evaluation Suite
+=================================================================
+
+[Evaluating TC-01] Query: 'Why did Europe sales drop in Q3 2024 and what competitor actions caused it?'
+  ✓ Intent Correct: True (HYBRID_DECISION)
+  ✓ Keyword Groundedness Recall: 100.0%
+  ✓ Responsible AI Confidence Score: 80.0%
+  ✓ Audit Status: PASSED
+
+[Evaluating TC-02] Query: 'What was the total revenue for North America in Q2 and Q3 2024?'
+  ✓ Intent Correct: True (SQL_ONLY)
+  ✓ Keyword Groundedness Recall: 66.7%
+  ✓ Responsible AI Confidence Score: 65.0%
+  ✓ Audit Status: REVIEW_RECOMMENDED
+
+[Evaluating TC-03] Query: 'What are the European Medicines Agency EMA safety buffer inventory requirements?'
+  ✓ Intent Correct: True (DOCS_ONLY)
+  ✓ Keyword Groundedness Recall: 75.0%
+  ✓ Responsible AI Confidence Score: 85.0%
+  ✓ Audit Status: PASSED
+
+=================================================================
 📊 BENCHMARK EVALUATION SUMMARY
+• Total Test Cases Evaluated: 3
 • Routing Intent Accuracy: 100.0%
 • Mean Keyword Context Recall: 80.6%
 • Mean Responsible AI Confidence: 76.7%
-• Total Evaluation Latency: 0.18s
+• Total Evaluation Latency: 0.39s (Average: ~0.13s / query)
 =================================================================
 ```
+
+#### Metric Breakdown:
+* **Routing Intent Accuracy (100.0%):** Evaluates if multi-category queries correctly activate their respective execution branches (`SQL_ONLY`, `DOCS_ONLY`, `HYBRID_DECISION`).
+* **Mean Keyword Context Recall (80.6%):** Verifies the percentage of ground-truth business entities (competitor pricing, volume drops, percentage variances) captured in the synthesized response.
+* **Mean Responsible AI Confidence (76.7%):** Automated guardrail auditing verifying numerical assertions against underlying DuckDB tables and enforcing document source citations.
+* **Execution Latency (<0.20s per query):** In-process DuckDB columnar execution and local vector similarity search eliminate network roundtrip latency.
 
 ### 4. Launch the Interactive Dashboard
 ```bash
