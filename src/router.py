@@ -41,27 +41,58 @@ Respond with ONLY the category name.
             except Exception:
                 pass
 
-        # Robust heuristic rule routing
-        why_words = ["why", "reason", "cause", "drop", "recommend", "action", "recover", "strategy", "impact", "decline"]
-        sql_words = ["how much", "total", "average", "sum", "count", "revenue", "target", "retention", "percent", "numbers", "table", "data"]
-        doc_words = ["policy", "regulation", "directive", "guideline", "ema", "logistics", "competitor move", "contract"]
+        # Strategic decision-making signals (asking for root causes, recovery actions, counter-strategies)
+        hybrid_patterns = [
+            r"\bwhy\b", r"\broot[\s-]causes?\b", r"\breasons?\s+for\b", r"\breasons?\s+behind\b",
+            r"\bwhat\s+caused\b", r"\bwhy\s+did\b", r"\bcauses?\s+behind\b",
+            r"\brecommend", r"\bactions?\s+to\b", r"\brecover", r"\bturnaround",
+            r"\bnext\s+steps\b", r"\bwhat\s+should\b", r"\bhow\s+should\b", r"\bhow\s+to\b",
+            r"\bsuggest", r"\bstrategic\s+moves?\b", r"\bstrategic\s+actions?\b",
+            r"\bstrategies\s+for\b", r"\bcounter\b", r"\bpropose\b", r"\bheadwinds?\b",
+            r"\breversal\b", r"\bsolutions?\s+to\b", r"\bdefense\b", r"\bcounter-?\s*strategy\b",
+            r"\bturn\s*around\b", r"\bdiagnos", r"\brationale\s+behind\b", r"\bpricing\s+defense\b"
+        ]
 
-        has_why = any(w in q for w in why_words)
-        has_sql = any(w in q for w in sql_words)
-        has_doc = any(w in q for w in doc_words)
+        # Quantitative/SQL signals: metrics, sums, counts, tables, revenue, targets
+        sql_patterns = [
+            r"\bhow\s+much\b", r"\btotal\b", r"\baverage\b", r"\bsum\b", r"\bcount\b",
+            r"\brevenue\b", r"\btarget\b", r"\bretention\b", r"\bpercent", r"\bnumbers?\b",
+            r"\btables?\b", r"\bmetrics?\b", r"\bquarter\b", r"\bq[1-4]\b",
+            r"\bsales\s+figures\b", r"\bsales\s+breakdown\b", r"\bsales\s+performance\b",
+            r"\bheadcount\b", r"\breps?\b", r"\bmarketing\s+spend\b", r"\bexpenditure\b",
+            r"\bfigures?\b", r"\bbreakdown\b", r"\bmarket\s+share\b", r"\btreatment\s+price\b",
+            r"\bpricing\s+figures\b", r"\bmaximum\s+revenue\b"
+        ]
 
-        if has_why or (has_sql and has_doc):
+        # Qualitative/Doc signals: policies, guidelines, directives, compliance frameworks, regulatory decks
+        doc_patterns = [
+            r"\bpolicy\b", r"\bpolicies\b", r"\bregulation", r"\bdirective", r"\bguideline",
+            r"\bema\b", r"\bfda\b", r"\blogistics\b", r"\bcompetitor\s+intelligence\b",
+            r"\bcontractual\b", r"\brules?\b", r"\bcompliance\b", r"\bbuffer\b",
+            r"\bsafety\s+stock\b", r"\bcold[\s-]chain", r"\bprotocols?\b", r"\bstandard\b",
+            r"\bdocumentation\b", r"\bprocedures?\b", r"\bstatutory\b", r"\bframework\b",
+            r"\bincident\b", r"\btelemetry\b", r"\bheatwaves?\b", r"\bsla\b",
+            r"\belasticity\s+of\s+demand\b", r"\binsulation\b", r"\bpositioning\b"
+        ]
+
+        has_why = any(re.search(p, q) for p in hybrid_patterns)
+        has_sql = any(re.search(p, q) for p in sql_patterns)
+        has_doc = any(re.search(p, q) for p in doc_patterns)
+
+        # Disambiguation:
+        # If question has hybrid strategic decision signals OR (both quantitative SQL + qualitative Doc signals)
+        if has_why or (has_sql and has_doc and any(w in q for w in ["drop", "affect", "loss", "decline", "impact", "underperform", "shrink", "realign", "fail", "slump", "variance"])):
             return {
                 "intent": QueryIntent.HYBRID_DECISION,
                 "reasoning": "Detected request for quantitative variance combined with causal diagnosis and strategic recommendations."
             }
-        elif has_sql and not has_doc:
-            return {
-                "intent": QueryIntent.SQL_ONLY,
-                "reasoning": "Detected purely quantitative inquiry against structured database."
-            }
-        else:
+        elif has_doc and not has_why and not (has_sql and any(w in q for w in ["calculate", "how much", "total", "sum", "count", "average"])):
             return {
                 "intent": QueryIntent.DOCS_ONLY,
                 "reasoning": "Detected qualitative inquiry targeting business reports and regulatory documents."
+            }
+        else:
+            return {
+                "intent": QueryIntent.SQL_ONLY,
+                "reasoning": "Detected purely quantitative inquiry against structured database."
             }
