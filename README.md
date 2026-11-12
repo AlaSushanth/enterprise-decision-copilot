@@ -80,56 +80,45 @@ decision-intelligence-copilot/
 
 ---
 
+## 📊 Benchmark Evaluation (60 Enterprise Queries)
+
+To quantitatively evaluate the system beyond subjective testing, we engineered an automated benchmark evaluation suite (src/evaluate.py) across **60 independently authored enterprise queries** (20 SQL, 20 Document RAG, and 20 Hybrid Decision queries).
+
+| Metric | Score | Evaluation Target / Methodology |
+| :--- | :---: | :--- |
+| **Routing Intent Accuracy** | **100.0%** | Classified 60/60 queries correctly across SQL_ONLY, DOCS_ONLY, and HYBRID_DECISION branches. |
+| **Mean Keyword Context Recall** | **93.1%** | Macro-average recall of ground-truth business entities (competitor pricing, volume drops, variances) in retrieved context. |
+| **Mean Responsible AI Compliance** | **81.6%** | Automated guardrail audit cross-verifying numeric values against DuckDB tables and enforcing source citations. |
+| **Mean End-to-End Latency** | **0.02s** | Average execution latency per query (1.22s total across all 60 queries) running locally in-process. |
+
+`ash
+# Reproduce the benchmark results locally
+python src/evaluate.py
+`
+
+---
+
 ## 🚀 Quickstart Guide
 
-### 1. Clone & Set Up Directory
-```bash
-cd decision-intelligence-copilot
-```
-
-### 2. Install Dependencies
-```bash
+### 1. Installation
+`ash
+git clone https://github.com/AlaSushanth/enterprise-decision-copilot.git
+cd enterprise-decision-copilot
 pip install -r requirements.txt
-```
+`
 
-### 3. Run Benchmark Evaluation Suite
+### 2. Run the Benchmark Suite
 `ash
 python src/evaluate.py
 `
 
-#### 📊 Live Verified Benchmark Results (Evaluated Across 60 Independent Enterprise Queries)
-`	ext
-======================================================================
-🚀 Running Enterprise Decision Copilot Benchmark Evaluation Suite
-📊 Dataset Size: 60 Independently Authored Enterprise Queries
-======================================================================
-
-======================================================================
-📊 VERIFIED BENCHMARK EVALUATION SUMMARY
-• Total Test Cases Evaluated: 60 queries across SQL, Docs, & Hybrid
-• Routing Intent Accuracy: 100.0% (60/60 correct)
-• Mean Keyword Context Recall: 93.1%
-• Mean Responsible AI Confidence: 81.6%
-• Total Evaluation Latency: 1.22s across 60 queries
-• Mean End-to-End Latency per Query: 0.020s (<0.20s)
-======================================================================
-`
-
-#### Metric Breakdown & Methodology:
-* **Dataset Scale (60 Queries):** Comprises 20 quantitative SQL-only queries, 20 qualitative document/regulatory queries, and 20 multi-faceted hybrid strategic decision queries written independently.
-* **Routing Intent Accuracy (100.0%):** Measures whether each query correctly activates its respective execution branch (SQL_ONLY, DOCS_ONLY, HYBRID_DECISION) without misrouting.
-* **Mean Keyword Context Recall (93.1%):** Measures the retrieval completeness of essential business entities (competitor pricing, volume changes, percentages) captured in the synthesized response.
-* **Mean Responsible AI Confidence (81.6%):** Automated guardrail auditing verifying numerical assertions against underlying DuckDB tables and enforcing document source citations.
-* **Mean End-to-End Latency (0.020s):** In-process DuckDB columnar execution and local vector similarity search eliminate network roundtrip latency.
-
-### 4. Launch the Interactive Dashboard
-```bash
+### 3. Launch the Executive Dashboard
+`ash
 streamlit run app.py
-```
+`
 Open [http://localhost:8501](http://localhost:8501) in your browser.
 
 ---
-
 
 ## 💼 Resume Ready Description
 
